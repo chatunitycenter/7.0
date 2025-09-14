@@ -20,7 +20,7 @@ const handler = async (m, { conn, args, command }) => {
     if (content.includes('/*') && content.includes('*/')) return m.reply(global.t('scriptAlreadyOff', userId, groupId) || 'Script è già spento.')
     const lines = content.split('\n')
     const preservedLine = lines.find(line => line.includes('//Plugin fatto da Gabs & 333 Staff'))
-    const rest = lines.filter(line => !line.includes('Plugin fatto da Gabs & 333 Staff'))
+    const rest = lines.filter(line => !line.includes('//Plugin fatto da Gabs & 333 Staff'))
     const newContent = `${preservedLine || ''}\n/*\n${rest.join('\n')}\n*/`
     fs.writeFileSync(filePath, newContent)
     return m.reply(global.t('scriptTurnedOff', userId, groupId, { file }) || `Script ${file} spento.`)
