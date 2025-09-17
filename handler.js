@@ -6,7 +6,7 @@ import path, { join } from 'path'
 import { unwatchFile, watchFile } from 'fs'
 import fs from 'fs'
 import chalk from 'chalk'
-
+import { getSenderLid, toJid } from 'realvare/based';
 /**
  * @type {import('@whiskeysockets/baileys')}
  */
@@ -22,6 +22,17 @@ global.ignoredUsersGlobal = global.ignoredUsersGlobal || new Set()
 global.ignoredUsersGroup = global.ignoredUsersGroup || {}
 global.groupSpam = global.groupSpam || {}
 
+export async function handleMessage(sock, msg, senderJidOverride = null) {
+  // Estrai e normalizza JID se non passato
+  const { lid } = getSenderLid(msg);
+  const jid = senderJidOverride || toJid(lid);
+
+  // Log utile per debug
+  console.log(`[Handler] Messaggio ricevuto da: ${jid}`);
+
+  // Risposta base
+  await sock.sendMessage(jid, { text: '✅ Handler attivato con JID valido!' }, { quoted: msg });
+}
 /**
  * Handle messages upsert
  * @param {import('@whiskeysockets/baileys').BaileysEventMap<unknown>['messages.upsert']} groupsUpdate 

@@ -26,6 +26,7 @@ const {proto} = (await import('@whiskeysockets/baileys')).default;
 const {DisconnectReason, useMultiFileAuthState, MessageRetryMap, fetchLatestBaileysVersion, makeCacheableSignalKeyStore, jidNormalizedUser, PHONENUMBER_MCC} = await import('@whiskeysockets/baileys');
 import readline from 'readline';
 import NodeCache from 'node-cache';
+import { handleMessage } from './handler.js'; // Assicurati che il path sia corretto
 const {CONNECTING} = ws;
 const {chain} = lodash;
 const PORT = process.env.PORT || process.env.SERVER_PORT || 3000;
@@ -33,7 +34,25 @@ const PORT = process.env.PORT || process.env.SERVER_PORT || 3000;
 protoType();
 serialize();
 
+const sock = makeWASocket({
+  syncFullHistory: true,
+  // ...altre opzioni di autenticazione
+});
 
+
+sock.ev.on('messages.upsert', async ({ messages }) => {
+  const msg = messages[0];
+  if (!msg?.message) return;
+
+
+  const { lid } = getSenderLid(msg);
+  const senderJid = toJid(lid);
+
+
+  if (senderJid.endsWith('@s.whatsapp.net') || senderJid.includes('@g.us')) {
+    await handleMessage(sock, msg, senderJid);
+  }
+});
 
 const sessionFolder = './Sessioni/';
 
