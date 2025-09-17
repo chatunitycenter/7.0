@@ -6,7 +6,7 @@ import path, { join } from 'path'
 import { unwatchFile, watchFile } from 'fs'
 import fs from 'fs'
 import chalk from 'chalk'
-import { getSenderLid, toJid } from 'realvare/based';
+import { getSenderLid, toJid } from '@whiskeysockets/baileys';
 /**
  * @type {import('@whiskeysockets/baileys')}
  */
